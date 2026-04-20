@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bariso Dukale Bookstore System</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f4f7f6;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .hidden { display: none !important; }
+
+        /* Auth Form Container */
+        .auth-wrapper {
+            max-width: 400px;
+            margin: 80px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: var(--primary);
+            color: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex; gap: 20px; margin: 0;
+        }
+
+        .nav-links li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .section-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .hero-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .logout-link {
+            color: #e74c3c !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="auth-section" class="auth-wrapper">
+        <h2 id="auth-title">Create Account</h2>
+        <form id="auth-form">
+            <input type="text" placeholder="Username" id="user-field" required>
+            <input type="password" placeholder="Password" id="password-field" required>
+            <button type="submit" class="btn-main" id="auth-btn">Sign Up</button>
+        </form>
+        <p id="toggle-msg">Already have an account? <a href="#" onclick="toggleAuth()">Login</a></p>
+    </div>
+
+    <div id="main-app" class="hidden">
+        <nav class="navbar">
+            <div class="logo"><strong>Bariso Dukale</strong> Bookstore</div>
+            <ul class="nav-links">
+                <li><a onclick="showPage('home')">Home</a></li>
+                <li><a onclick="showPage('about')">About</a></li>
+                <li><a onclick="showPage('menu')">Menu</a></li>
+                <li><a onclick="showPage('contact')">Contact</a></li>
+                <li><a onclick="logout()" class="logout-link">Logout</a></li>
+            </ul>
+        </nav>
+
+        <div class="container">
+            <section id="home-page" class="page">
+                <h1 class="section-title">Welcome Home</h1>
+                <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1000&q=80" alt="Library" class="hero-img">
+                <p>Explore our latest book collections and bookstore services right here.</p>
+            </section>
+
+            <section id="about-page" class="page hidden">
+                <h1 class="section-title">About This Project</h1>
+                <p>This project is the Bariso Dukale Bookstore Management System, developed as part of an Internet Programming course.</p>
+            </section>
+
+            <section id="menu-page" class="page hidden">
+                <h1 class="section-title">Book Menu</h1>
+                <ul>
+                    <li>Computer Science & IT</li>
+                    <li>Economics & Business</li>
+                    <li>Literature & Fiction</li>
+                </ul>
+            </section>
+
+            <section id="contact-page" class="page hidden">
+                <h1 class="section-title">Contact Us</h1>
+                <p>Location: West guji, Ethiopia</p>
+                <p>Email: support@barisodukale.com</p>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        let isLoginMode = false;
+
+        // Switches between Sign Up and Login display
+        function toggleAuth() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-title').innerText = isLoginMode ? "Login" : "Create Account";
+            document.getElementById('auth-btn').innerText = isLoginMode ? "Login" : "Sign Up";
+            document.getElementById('toggle-msg').innerHTML = isLoginMode ? 
+                "Need an account? <a href='#' onclick='toggleAuth()'>Sign Up</a>" : 
+                "Already have an account? <a href='#' onclick='toggleAuth()'>Login</a>";
+            
+            // Clear inputs for security
+            document.getElementById('user-field').value = "";
+            document.getElementById('password-field').value = "";
+        }
+
+        // Logic for handling form submission
+        document.getElementById('auth-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('user-field').value;
+            const password = document.getElementById('password-field').value;
+
+            if (!isLoginMode) {
+                // SIGN UP: Save credentials to LocalStorage
+                localStorage.setItem('regUser', username);
+                localStorage.setItem('regPass', password);
+                alert("Account created successfully! Please log in now.");
+                toggleAuth(); 
+            } else {
+                // LOGIN: Validate against saved credentials
+                const savedUser = localStorage.getItem('regUser');
+                const savedPass = localStorage.getItem('regPass');
+
+                if (username === savedUser && password === savedPass) {
+                    document.getElementById('auth-section').classList.add('hidden');
+                    document.getElementById('main-app').classList.remove('hidden');
+                } else {
+                    alert("Invalid Username or Password! Please use the credentials you registered with.");
+                }
+            }
+        });
+
+        // Navigation function to switch between pages
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId + '-page').classList.remove('hidden');
+        }
+
+        // Logout function resets the app
+        function logout() {
+            location.reload(); 
+        }
+    </script>
+</body>
+</html>
